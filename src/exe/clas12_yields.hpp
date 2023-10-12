@@ -16,12 +16,13 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<SyncFile>& _syn
   // Get the number of events in this thread
   size_t num_of_events = (int)_chain->GetEntries();
 
-  float beam_energy = 10.6;
-  if (std::is_same<CutType, rga_Cuts>::value) {
-    beam_energy = 10.6;
-  } else if (std::is_same<CutType, uconn_Cuts>::value) {
-    beam_energy = 10.6;
-  }
+  float beam_energy = 24.0;
+  // don't need following code since it gives the same result in both cases (?)
+  // if (std::is_same<CutType, rga_Cuts>::value) {
+  //   beam_energy = 10.6;
+  // } else if (std::is_same<CutType, uconn_Cuts>::value) {
+  //   beam_energy = 10.6;
+  // }
 
   if (getenv("BEAM_E") != NULL) beam_energy = atof(getenv("BEAM_E"));
 
@@ -30,9 +31,9 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<SyncFile>& _syn
             << num_of_events << " Events " << DEF << "===============\n";
 
   // Make a data object which all the branches can be accessed from
-  // for sim data use it
+  // for sim data use
   auto data = std::make_shared<Branches12>(_chain, true);
-  // for exp data use it
+  // for exp data use
   // auto data = std::make_shared<Branches12>(_chain);
 
   // Total number of events "Processed"
@@ -148,14 +149,14 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<SyncFile>& _syn
         //   // total++;
         csv_data output;
 
-        // // // // // //  1) for generated
+        // // // // 1) for generated
         output.w_mc = mc_event->W_mc();
         output.q2_mc = mc_event->Q2_mc();
 
-        // // // /// 2) reconstructed  and rec exclusive
-        output.w = event->W();
-        output.q2 = event->Q2();
-        output.w_had = event->w_hadron();
+        // // // // 2) reconstructed and rec exclusive
+        // output.w = event->W();
+        // output.q2 = event->Q2();
+        // output.w_had = event->w_hadron();
         // output.w_diff = event->w_difference();
         // output.sf = (data->ec_tot_energy(0) / (event->elec_mom()));
         // output.elec_prime_m2 = (event->elec_prime_mass2());
@@ -192,14 +193,14 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<SyncFile>& _syn
         // // //         // output.mm2_mProt = event->MM2_mProt();
 
         // // //         // output.mm2_exclusive_at_zero = event->MM2_exclusive();
-        output.energy_x_mu = event->Energy_excl();
-        output.mom_x_mu = event->Mom_excl();
+        // output.energy_x_mu = event->Energy_excl();
+        // output.mom_x_mu = event->Mom_excl();
 
         // // //         // output.status_Pim = statusPim;
         // // //         // output.status_Pip = statusPip;
         // // //         // output.status_Prot = statusProt;
 
-        output.weight_rec = event->weight();
+        // output.weight_rec = event->weight();
 
         // //         // output.sf = (data->ec_tot_energy(0) / (event->elec_mom()));
         // output.gen_elec_E = mc_event->elec_E_mc_gen();
@@ -236,7 +237,9 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<SyncFile>& _syn
         // output.vertex_had[2][2] = vertex_hadron[2][2];
 
         // output.weight_gen = event->weight();
-        // output.weight_gen = mc_event->weight();
+        // is this the sum of weight for gen? (trying to fix acceptance to be from weighted sums)
+        // no, I don't think so
+        output.weight_gen = mc_event->weight();
 
         _sync->write(output);
       }

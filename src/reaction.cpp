@@ -135,30 +135,28 @@ float Reaction::w_difference() {
 
 
 void Reaction::CalcMissMass() {
-  auto mm = std::make_unique<TLorentzVector>();
+  auto mm_mpim = std::make_unique<TLorentzVector>();
   auto mm_mpip = std::make_unique<TLorentzVector>();
   auto mm_mprot = std::make_unique<TLorentzVector>();
   auto mm_excl = std::make_unique<TLorentzVector>();
 
-  *mm += (*_gamma + *_target);
+  // *mm += (*_gamma + *_target);
+  //  _MM = mm->M();
 
   if (TwoPion_missingPim()) {
-    *mm -= *_prot;
-    *mm -= *_pip;
+    *mm_mpim += (*_gamma + *_target);
+    *mm_mpim -= *_prot;
+    *mm_mpim -= *_pip;
+    _MM2_mPim = mm_mpim->M2();
+  
+  
+
     // *mm -= *_pim;
-    _MM = mm->M();
-    _MM2 = mm->M2();
 
-
+    
 
   }
   if (TwoPion_exclusive()) {
-    // *mm -= *_prot;
-    // *mm -= *_pip;
-    // // *mm -= *_pim;
-    // _MM = mm->M();
-    // _MM2 = mm->M2();
-
     *mm_excl += (*_gamma + *_target);
     *mm_excl -= *_prot;
     *mm_excl -= *_pip;
@@ -168,16 +166,6 @@ void Reaction::CalcMissMass() {
     _MM2_exclusive = mm_excl->M2();
     _excl_Energy = mm_excl->E();
     _excl_Mom = mm_excl->P();
-
-    // *mm_mpip += (*_gamma + *_target);
-    // *mm_mpip -= *_prot;
-    // *mm_mpip -= *_pim;
-    // _MM2_mPip = mm_mpip->M2();
-
-    // *mm_mprot += (*_gamma + *_target);
-    // *mm_mprot -= *_pip;
-    // *mm_mprot -= *_pim;
-    // _MM2_mProt = mm_mprot->M2();
   }
 
   if (TwoPion_missingPip()) {
@@ -197,9 +185,9 @@ float Reaction::MM() {
   if (_MM != _MM) CalcMissMass();
   return _MM;
 }
-float Reaction::MM2() {
-  if (_MM2 != _MM2) CalcMissMass();
-  return _MM2;
+float Reaction::MM2_mPim() {
+  if (_MM2_mPim != _MM2_mPim) CalcMissMass();
+  return _MM2_mPim;
 }
 float Reaction::MM2_exclusive() {
   if (_MM2_exclusive != _MM2_exclusive) CalcMissMass();

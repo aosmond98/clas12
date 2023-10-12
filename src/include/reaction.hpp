@@ -45,7 +45,7 @@ class Reaction {
   short _sector = -1;
 
   float _MM = NAN;
-  float _MM2 = NAN;
+  float _MM2_mPim = NAN;
   float _MM2_exclusive = NAN;
   float _excl_Energy = NAN;
   float _excl_Mom = NAN;;
@@ -127,7 +127,7 @@ class Reaction {
 
   void CalcMissMass();
   float MM();
-  float MM2();
+  float MM2_mPim();
   float MM2_exclusive();
   float Energy_excl();
   float Mom_excl();

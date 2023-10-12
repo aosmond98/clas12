@@ -8,6 +8,10 @@
 #include "TH1.h"
 #include "TH2.h"
 #include "THnSparse.h"
+#include "TTree.h"
+#include "TBranch.h"
+#include <TChain.h>
+#include <TSystem.h>
 #include "TLegend.h"
 #include "TLorentzVector.h"
 #include "TPaveStats.h"
@@ -53,6 +57,29 @@ protected:
     static const short num_sectors = 6;
     std::string sec_name[num_sectors] = {"1", "2", "3", "4", "5", "6"};
 
+    THnSparseF* hMM2vsWvsQ2; // THnSparse for MM^2 vs. W vs. Q^2
+
+    
+    // // THnSparse histogram stuff
+    // const Int_t kNbinsW = 100; // Number of bins for W
+    // const Double_t kMinW = 0.0; // Minimum W
+    // const Double_t kMaxW = 5.0; // Maximum W
+
+    // const Int_t kNbinsQ2 = 100; // Number of bins for Q^2
+    // const Double_t kMinQ2 = 0.0; // Minimum Q^2
+    // const Double_t kMaxQ2 = 24.0; // Maximum Q^2
+
+    // const Int_t kNbinsMM2 = 100; // Number of bins for MM^2
+    // const Double_t kMinMM2 = -1.0; // Minimum MM^2
+    // const Double_t kMaxMM2 = 1.0; // Maximum MM^2
+
+    // const int kNdimensions = 3;
+    // const char* axisTitles[kNdimensions] = {"W (GeV)", "Q^2 (GeV^2)", "MM^2 (GeV^2)"};
+
+    // Int_t nBins[kNdimensions] = {kNbinsW, kNbinsQ2, kNbinsMM2};
+    // Double_t minValues[kNdimensions] = {kMinW, kMinQ2, kMinMM2};
+    // Double_t maxValues[kNdimensions] = {kMaxW, kMaxQ2, kMaxMM2};
+
     static const short CUTS = 2;
     enum cuts
     {
@@ -65,24 +92,29 @@ protected:
 
     TH1D_ptr momentum;
     TH1D_ptr W_hist;
+    TH1D_ptr MM2_hist;
     TH1D_ptr Q2_hist;
     TH2D_ptr W_vs_q2;
+    TH2D_ptr Mom_vs_MM2;
 
     TH1D_ptr W_thrown;
     TH2D_ptr W_vs_Q2_thrown;
 
     TH2D_ptr W_vs_q2_sec[num_sectors];
+    TH2D_ptr Mom_vs_MM2_sec[num_sectors];
     TH1D_ptr W_sec[num_sectors];
+    TH1D_ptr MM2_sec[num_sectors];
 
     TH1D_ptr W_det[3];
     TH2D_ptr WQ2_det[3];
     // Mom vs Beta
     TH2D_ptr momvsbeta_hist[particle_num][charge_num][with_id_num];
-    // Mom vs Beta
 
     // Delta T
     TH2D_ptr delta_t_hist[particle_num][charge_num][with_id_num][2];
-    // Delta T
+
+    // // w, q2, and third single differential
+    // THnSparse_ptr W_vs_q2_mmsq;
 
 public:
     Histogram(const std::string &output_file);
@@ -94,7 +126,7 @@ public:
     void Write_WvsQ2();
 
     void makeHists_MomVsBeta();
-    void Fill_MomVsBeta(const std::shared_ptr<Branches12> &data, int part);
+    void Fill_MomVsBeta(const std::shared_ptr<Branches12> &data, int part, const std::shared_ptr<Reaction> &_e);
     void Write_MomVsBeta();
 
     // Delta T
@@ -106,6 +138,17 @@ public:
 
     void Write_deltat();
     void Write();
+
+    // // THnSparse
+    // void makeHists_THnSparse();
+    // void Fill_THnSparse(const std::shared_ptr<Reaction> &_e);
+    // void Write_THnSparse();
+
+    // mmsq
+    void Create();
+    void FillHistogram(Double_t w, Double_t q2, Double_t mm2);
+    void WriteHistogram();
+
 };
 
 #endif

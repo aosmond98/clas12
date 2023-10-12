@@ -29,6 +29,8 @@ class Delta_T {
   float _beta = NAN;
   float _momentum = NAN;
   bool _ctof = false;
+  // added this line 9/6/23
+  bool _ctof_particle = false;
 
   float _vertex_time(float sc_time, float sc_pathlength, float relatavistic_beta);
   float _deltat(int num);
@@ -62,6 +64,8 @@ class Delta_T {
 
   float momentum();
   bool ctof();
+  // added this line too, same day
+  bool ctof_particle(int i);
 };
 
 #endif
