@@ -16,23 +16,23 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram>& _hi
   size_t num_of_events = (int)_chain->GetEntries();
 
   float beam_energy = 24.0;
-  // don't need following code since it gives the same result in both cases (?)
-  // if (std::is_same<CutType, rga_Cuts>::value) {
-  //   beam_energy = 10.6;
-  // } else if (std::is_same<CutType, uconn_Cuts>::value) {
-  //   beam_energy = 10.6;
-  // }
+  // don't need following code since it gives the same result in both cases (?) 
+  if (std::is_same<CutType, rga_Cuts>::value) {
+    beam_energy = 24.0;
+  } else if (std::is_same<CutType, uconn_Cuts>::value) {
+    beam_energy = 24.0;
+  }
 
-  if (getenv("BEAM_E") != NULL) beam_energy = atof(getenv("BEAM_E"));
+  // if (getenv("BEAM_E") != NULL) beam_energy = atof(getenv("BEAM_E"));
 
   // Print some information for each thread
   std::cout << "=============== " << RED << "Thread " << thread_id << DEF << " =============== " << BLUE
             << num_of_events << " Events " << DEF << "===============\n";
 
   // Make a data object which all the branches can be accessed from
-  // for sim data use (gen)
+  // for sim data use 
   auto data = std::make_shared<Branches12>(_chain, true);
-  // for exp data use (rec)
+  // for exp data use 
   // auto data = std::make_shared<Branches12>(_chain);
 
   // Total number of events "Processed"
@@ -48,10 +48,14 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram>& _hi
     if (thread_id == 0 && current_event % 1000 == 0)
       std::cout << "\t" << (100 * current_event / num_of_events) << " %\r" << std::flush;
 
+      // use for gen, comment out for rec?? (or use for both??)
     if (data->mc_npart() < 1) continue;
 
     // If we pass electron cuts the event is processed
     total++;
+
+    // auto dt = std::make_shared<Delta_T>(data);
+    // auto cuts = std::make_shared<uconn_Cuts>(data);
 
     // Make a reaction class from the data given
     auto mc_event = std::make_shared<MCReaction>(data, beam_energy);
@@ -68,10 +72,11 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram>& _hi
       } else if (data->mc_pid(part) == PIM) {
         mc_event->SetMCPim(part);
 
-        // } else {
-        //   mc_event->SetMCOther(part);
+      // } else {
+      //   mc_event->SetMCOther(part);
       }
     }
+    _hists->Fill_WvsQ2_gen(mc_event);
 
     auto dt = std::make_shared<Delta_T>(data);
     auto cuts = std::make_shared<uconn_Cuts>(data);
@@ -84,9 +89,9 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram>& _hi
     // For each particle in the event
     for (int part = 1; part < data->gpart(); part++) {
       dt->dt_calc(part);
-      _hists->Fill_MomVsBeta(data, part, event);
-      _hists->Fill_deltat_pi(data, dt, part, event);
-      _hists->Fill_deltat_prot(data, dt, part, event);
+      // _hists->Fill_MomVsBeta(data, part, event);
+      // _hists->Fill_deltat_pi(data, dt, part, event);
+      // _hists->Fill_deltat_prot(data, dt, part, event);
 
       // Check particle ID's and fill the reaction class
       if (cuts->IsProton(part)) {
@@ -109,13 +114,24 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram>& _hi
     // if (event->TwoPion_missingPim()) {
     // if (event->TwoPion_missingPip()) {
     // if (event->TwoPion_missingProt()) {
-     if (event->TwoPion_exclusive()) {
-    //   if (event->W() > 1.25 && event->W() < 2.55 && event->Q2() > 1.5 && event->Q2() < 10.5) {
-        if (event->W() > 1.25 && event->W() < 2.55 && event->Q2() > 1.5 && event->Q2() < 30.0 && event->weight() > 0.0) {
+    if (event->TwoPion_exclusive()) {
+    // //   if (event->W() > 1.25 && event->W() < 2.55 && event->Q2() > 1.5 && event->Q2() < 10.5) {
+      if (event->W() > 1.25 && event->W() < 2.55 && event->Q2() > 1.5 && event->Q2() < 30.0 && event->weight() > 0.0) {
+        _hists->Fill_WvsQ2_rec(event);
         total_twopion_events++;
-        _hists->Fill_WvsQ2(event);
       }
     }
+    // not needed above or below, these if loops dont do anything (currently)
+    // if (mc_event->TwoPion_exclusive()){
+    //   if (mc_event->W_mc() > 1.25 && mc_event->W_mc() < 2.55 && mc_event->Q2_mc() > 1.5 && mc_event->Q2_mc() < 30.0
+    //   && mc_event->weight() > 0.0) {
+    //     _hists->Fill_WvsQ2_gen(mc_event);
+    //     total_twopion_events++;
+    //   }
+    // }
+    // _hists->Fill_WvsQ2_rec(event);
+    // _hists->Fill_WvsQ2_gen(mc_event);
+  // }
   }
   std::cout << "Percent = " << 100.0 * total / num_of_events << std::endl;
   // Return the total number of events

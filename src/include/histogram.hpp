@@ -39,13 +39,14 @@ protected:
     std::shared_ptr<TCanvas> def;
 
     int bins = 500;
+    int W_nBins = 500;
+    int Q2_nBins = 500;
     double p_min = 0.0;
     double p_max = 20.0;
     double Dt_max = 10.0;
     double Dt_min = -Dt_max;
     double q2_max = 24.0;
     double w_max = 5.0;
-
     double zero = 0.0;
 
     static const short particle_num = 4; // 0-e 1-Pi 2-P 3-K
@@ -56,29 +57,6 @@ protected:
     std::string id_name[with_id_num] = {"withoutID", "withID", "antiID"};
     static const short num_sectors = 6;
     std::string sec_name[num_sectors] = {"1", "2", "3", "4", "5", "6"};
-
-    THnSparseF* hMM2vsWvsQ2; // THnSparse for MM^2 vs. W vs. Q^2
-
-    
-    // // THnSparse histogram stuff
-    // const Int_t kNbinsW = 100; // Number of bins for W
-    // const Double_t kMinW = 0.0; // Minimum W
-    // const Double_t kMaxW = 5.0; // Maximum W
-
-    // const Int_t kNbinsQ2 = 100; // Number of bins for Q^2
-    // const Double_t kMinQ2 = 0.0; // Minimum Q^2
-    // const Double_t kMaxQ2 = 24.0; // Maximum Q^2
-
-    // const Int_t kNbinsMM2 = 100; // Number of bins for MM^2
-    // const Double_t kMinMM2 = -1.0; // Minimum MM^2
-    // const Double_t kMaxMM2 = 1.0; // Maximum MM^2
-
-    // const int kNdimensions = 3;
-    // const char* axisTitles[kNdimensions] = {"W (GeV)", "Q^2 (GeV^2)", "MM^2 (GeV^2)"};
-
-    // Int_t nBins[kNdimensions] = {kNbinsW, kNbinsQ2, kNbinsMM2};
-    // Double_t minValues[kNdimensions] = {kMinW, kMinQ2, kMinMM2};
-    // Double_t maxValues[kNdimensions] = {kMaxW, kMaxQ2, kMaxMM2};
 
     static const short CUTS = 2;
     enum cuts
@@ -97,8 +75,12 @@ protected:
     TH2D_ptr W_vs_q2;
     TH2D_ptr Mom_vs_MM2;
 
-    TH1D_ptr W_thrown;
-    TH2D_ptr W_vs_Q2_thrown;
+    TH2D_ptr WvsQ2_gen;
+    TH2D_ptr WvsQ2_rec;
+    // TH2D_ptr acceptance_hist;
+
+    // TH1D_ptr W_thrown;
+    // TH2D_ptr W_vs_Q2_thrown;
 
     TH2D_ptr W_vs_q2_sec[num_sectors];
     TH2D_ptr Mom_vs_MM2_sec[num_sectors];
@@ -113,42 +95,42 @@ protected:
     // Delta T
     TH2D_ptr delta_t_hist[particle_num][charge_num][with_id_num][2];
 
-    // // w, q2, and third single differential
-    // THnSparse_ptr W_vs_q2_mmsq;
-
 public:
     Histogram(const std::string &output_file);
     ~Histogram();
 
-    // W and Q^2
-    void makeHists_sector();
-    void Fill_WvsQ2(const std::shared_ptr<Reaction> &_e);
+    // // W and Q^2
+    // void makeHists_sector();
+    // void Fill_WvsQ2(const std::shared_ptr<Reaction> &_e);
+    // void Write_WvsQ2();
+
+    // WvsQ2 to make acceptance
+    // void makeHists_WvsQ2_gen();
+    // void Fill_WvsQ2_gen(const std::shared_ptr<MCReaction> &_e);
+    // void Write_WvsQ2_gen();
+
+    // void makeHists_WvsQ2_rec();
+    // void Fill_WvsQ2_rec(const std::shared_ptr<Reaction> &_e);
+    // void Write_WvsQ2_rec();
+
+    void makeHists_WvsQ2();
+    void Fill_WvsQ2_rec(const std::shared_ptr<Reaction> &_e);
+    void Fill_WvsQ2_gen(const std::shared_ptr<MCReaction> &_e);
     void Write_WvsQ2();
 
-    void makeHists_MomVsBeta();
-    void Fill_MomVsBeta(const std::shared_ptr<Branches12> &data, int part, const std::shared_ptr<Reaction> &_e);
-    void Write_MomVsBeta();
+    // void makeHists_MomVsBeta();
+    // void Fill_MomVsBeta(const std::shared_ptr<Branches12> &data, int part, const std::shared_ptr<Reaction> &_e);
+    // void Write_MomVsBeta();
 
-    // Delta T
-    void makeHists_deltat();
-    void Fill_deltat_pi(const std::shared_ptr<Branches12> &data,
-                        const std::shared_ptr<Delta_T> &dt, int part, const std::shared_ptr<Reaction> &_e);
-    void Fill_deltat_prot(const std::shared_ptr<Branches12> &data,
-                          const std::shared_ptr<Delta_T> &dt, int part, const std::shared_ptr<Reaction> &_e);
+    // // Delta T
+    // void makeHists_deltat();
+    // void Fill_deltat_pi(const std::shared_ptr<Branches12> &data,
+    //                     const std::shared_ptr<Delta_T> &dt, int part, const std::shared_ptr<Reaction> &_e);
+    // void Fill_deltat_prot(const std::shared_ptr<Branches12> &data,
+    //                       const std::shared_ptr<Delta_T> &dt, int part, const std::shared_ptr<Reaction> &_e);
 
-    void Write_deltat();
+    // void Write_deltat();
     void Write();
-
-    // // THnSparse
-    // void makeHists_THnSparse();
-    // void Fill_THnSparse(const std::shared_ptr<Reaction> &_e);
-    // void Write_THnSparse();
-
-    // mmsq
-    void Create();
-    void FillHistogram(Double_t w, Double_t q2, Double_t mm2);
-    void WriteHistogram();
-
 };
 
 #endif
