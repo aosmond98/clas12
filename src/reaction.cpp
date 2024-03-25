@@ -409,11 +409,11 @@ float Reaction::prot_Phi_lab_measured() {
 }
 
 
-MCReaction::MCReaction(const std::shared_ptr<Branches12>& data, float beam_enrgy) {
+MCReaction::MCReaction(const std::shared_ptr<Branches12>& data, float beam_energy) {
   _data = data;
   if (!_data->mc()) _data->mc_branches();
   _beam = std::make_unique<TLorentzVector>();
-  _beam_energy = beam_enrgy;
+  _beam_energy = beam_energy;
   _weight_mc = _data->mc_weight();
   _beam->SetPxPyPzE(0.0, 0.0, sqrt(_beam_energy * _beam_energy - MASS_E * MASS_E), _beam_energy);
 

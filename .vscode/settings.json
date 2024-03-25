@@ -85,6 +85,8 @@
         "span": "cpp",
         "stack": "cpp",
         "unordered_set": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "__verbose_abort": "cpp",
+        "charconv": "cpp"
     }
 }

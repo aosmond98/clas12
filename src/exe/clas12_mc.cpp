@@ -1,6 +1,6 @@
-#include "clas12_mc.hpp"
 #include <future>
 #include <thread>
+#include "clas12_mc.hpp"
 
 int main(int argc, char** argv) {
   // Need this to make sure root doesn't break
