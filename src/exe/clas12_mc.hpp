@@ -15,12 +15,12 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram>& _hi
   // Get the number of events in this thread
   size_t num_of_events = (int)_chain->GetEntries();
 
-  float beam_energy = 22.0;
+  float beam_energy = 10.2;
   // don't need following code since it gives the same result in both cases (?) 
   if (std::is_same<CutType, rga_Cuts>::value) {
-    beam_energy = 22.0;
+    beam_energy = 10.2;
   } else if (std::is_same<CutType, uconn_Cuts>::value) {
-    beam_energy = 22.0;
+    beam_energy = 10.2;
   }
 
   // if (getenv("BEAM_E") != NULL) beam_energy = atof(getenv("BEAM_E"));
@@ -111,10 +111,11 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram>& _hi
 
     // if (event->TwoPion_missingPim()) {
     // if (event->TwoPion_missingPip()) {
-    // if (event->TwoPion_missingProt()) {
-    if (event->TwoPion_exclusive()) {
+    if (event->TwoPion_missingProt()) {
+    // if (event->TwoPion_exclusive()) {
     //   if (event->W() > 1.25 && event->W() < 2.55 && event->Q2() > 1.5 && event->Q2() < 10.5) {
-      if (event->W() > 1.25 && event->W() < 2.55 && event->Q2() > 1.5 && event->Q2() < 30.0 && event->weight() > 0.0) {
+      // if (event->W() > 1.25 && event->W() < 2.55 && event->Q2() > 1.5 && event->Q2() < 30.0 && event->weight() > 0.0) {
+      if (event->W() > 0.0 && event->W() < 5.0 && event->Q2() > 0.0 && event->Q2() < 30.0 && event->weight() > 0.0) {
         _hists->Fill_WvsQ2(event);
         _hists->Fill_MM2(event);
         _hists->Fill_MM2withbins(event);

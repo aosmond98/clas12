@@ -47,23 +47,22 @@ protected:
     double Dt_max = 10.0;
     double Dt_min = -Dt_max;
     double q2_max = 24.0;
+    // double q2_max = 30.0;
     double w_max = 5.0;
     double zero = 0.0;
 
     // number of W and Q^2 bins
-    static constexpr int w_nBins = 25;  
-    static constexpr int q2_nBins = 17;
-
-    // // number of bins for W and Q^2
-    // int w_nBins = sizeof(w_bin_ranges) / sizeof(w_bin_ranges[0]) - 1;
-    // int q2_nBins = sizeof(q2_bin_ranges) / sizeof(q2_bin_ranges[0]) - 1;
+    static constexpr int w_nBins = 25; // 25 
+    static constexpr int q2_nBins = 17; // 17
 
     // bin ranges for W and Q^2
-    double w_bin_ranges[25] = {1.40000, 1.42500, 1.45000, 1.47500, 1.50000, 1.52500, 1.55000, 1.57500, 1.60000, 1.62500, 1.65000, 1.67500, 
-                                1.70000, 1.72500, 1.75000, 1.77500, 1.80000, 1.82500, 1.85000, 1.87500, 1.90000, 1.92500, 1.95000, 
-                                1.97500, 2.00000};
-    double q2_bin_ranges[17] = {2.0, 2.4, 3.0, 3.5, 4.2, 5.0, 6.0, 7.0, 8.0, 9.0, 11.0, 13.0, 15.0, 18.0, 
-                                21.0, 25.0, 30.0};
+    double w_bin_ranges[w_nBins] = {1.4, 1.425, 1.45, 1.475, 1.5, 1.525, 1.55, 1.575, 1.6, 1.625, 1.65, 1.675, 
+                                1.7, 1.725, 1.75, 1.775, 1.8, 1.825, 1.85, 1.875, 1.9, 1.925, 1.95, 
+                                1.975, 2.0
+                                };
+    double q2_bin_ranges[q2_nBins] = {2.0, 2.4, 3.0, 3.5, 4.2, 5.0, 6.0, 7.0, 8.0, 9.0, 11.0, 13.0, 15.0, 18.0, 
+                                21.0, 25.0, 30.0
+                                };
 
     static const short particle_num = 4; // 0-e 1-Pi 2-P 3-K
     std::string particle_name[particle_num] = {"e", "pi", "P", "K"};
@@ -85,6 +84,12 @@ protected:
     TH1D_ptr momentum;
     TH2D_ptr Mom_vs_Q2_hist[particle_num][charge_num][with_id_num];
 
+    TH1D_ptr elec_energy;
+    TH2D_ptr mom_vs_theta;
+    TH2D_ptr mom_vs_phi;
+    TH2D_ptr momvstheta_sec[num_sectors];
+    TH2D_ptr momvsphi_sec[num_sectors];
+    
     TH1D_ptr W;
     TH1D_ptr Q2;
     TH2D_ptr WvsQ2;

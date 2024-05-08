@@ -12,14 +12,15 @@ bool Cuts::ElectronCuts() {
   bool _elec = true;
   // Number of good particles is greater than 0
   // So that we can check at(0) without errors
+  // selecting good electrons, this is constant for beam energies, other cuts may vary for beam energy
   _elec &= (_data->gpart() > 0);
   if (!_elec) return false;
 
   _elec &= (_data->gpart() < 20);
 
   _elec &= (_data->charge(0) == NEGATIVE);
-  _elec &= (_data->pid(0) == ELECTRON);
-  _elec &= (2000 <= abs(_data->status(0)) && abs(_data->status(0)) < 4000);
+  _elec &= (_data->pid(0) == ELECTRON); // setting ==ELECTRON is using their electron 
+  _elec &= (2000 <= abs(_data->status(0)) && abs(_data->status(0)) < 4000); // only using forward detector 
   return _elec;
 }
 

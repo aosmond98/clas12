@@ -178,8 +178,8 @@ void Reaction::CalcMissMass() {
   *mm_mprot += (*_gamma + *_target);
   *mm_mprot -= *_pip;
   *mm_mprot -= *_pim;
-  _MM2_mProt = mm_mprot->M2();
-}
+  _MM2_mProt = mm_mprot->M2(); //print here
+  }
 }
 float Reaction::MM() {
   if (_MM != _MM) CalcMissMass();
