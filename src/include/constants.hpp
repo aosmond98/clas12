@@ -4,6 +4,11 @@
 #include <unordered_map>
 #include "TMath.h"
 
+extern bool _mc; // declare as an external variable
+extern bool is_gen_data; // testing something
+extern bool is_rec_data;
+extern bool is_exp_data;
+
 static const int MAX_PARTS = 100;
 static const int N_SIGMA = 3;
 static const float PI = TMath::Pi();
