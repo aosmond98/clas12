@@ -703,7 +703,6 @@ int Branches12::sc_ctof_component(int i) {
   else
     return _sc_ctof_component->at(i);
 }
-
 int Branches12::mc_run() { return _mc_run; }
 int Branches12::mc_event() { return _mc_event; }
 int Branches12::mc_type() { return _mc_type; }

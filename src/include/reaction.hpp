@@ -13,7 +13,9 @@ class Reaction {
  protected:
   std::shared_ptr<Branches12> _data;
 
-  double _beam_energy = 24.0;
+  double _beam_energy = 10.6041;
+  std::string _data_type;
+  // double _beam_energy = beam_energy;
   std::unique_ptr<TLorentzVector> _beam;
   std::unique_ptr<TLorentzVector> _elec;
   std::unique_ptr<TLorentzVector> _gamma;
@@ -25,7 +27,10 @@ class Reaction {
   std::unique_ptr<TLorentzVector> _neutron;
 
 
-  bool _mc = false;
+  // bool _mc = false;
+  bool is_gen_data = false;
+  bool is_rec_data = false;
+  bool is_exp_data = false;
 
   bool _hasE = false;
   bool _hasP = false;
@@ -61,28 +66,37 @@ class Reaction {
   float _theta_e = NAN;
   float _elec_phi = NAN;
 
+  float _inv_Ppip = NAN;
+  float _inv_Ppim = NAN;
+  float _inv_pip_pim = NAN;
+
   float _prot_status = NAN;
-  float _pip_status = NAN;
+  float _pip_status = NAN; 
   float _pim_status = NAN;
 
   void SetElec();
 
 
-
-
  public:
   Reaction(){};
-  Reaction(const std::shared_ptr<Branches12> &data, float beam_energy);
+  Reaction(const std::shared_ptr<Branches12> &data, float beam_energy, const std::string &data_type);
   ~Reaction();
+  
+  inline bool mc() { return _mc; }
+    
   inline float weight() {
-    // return _data->mc_weight();
-    return 1.0;
+    // if (is_gen_data || is_rec_data) {
+      // --- use for sim data ---
+      return _data->mc_weight() / 1e4; // ***** search mc_weight and edit that / 1e4 too   
+    // } else if (is_exp_data) {
+     // --- use for exp data ---
+      // return 1.0;
+    // }
+    // return 0.0;
   }
+
   // Check lists when you swich from mc to exp or vice-versa
-  // 1. inline weight function above
-  // 2. clas12_yields: auto data = std::make_shared<Branches12>(_chain, true);  turn off true for data
   // 3. from if (data->mc_npart() < 1) to all particle set up im mc events.
-  // 4. all mc bank related (generated) output parameters will not work in exp data
 
   // momentum correction
   void SetMomCorrElec();
@@ -94,7 +108,6 @@ class Reaction {
   double elec_prime_mass2();
   double elec_mass2();
 
-  inline bool mc() { return _mc; }
   void SetProton(int i);
   void SetPip(int i);
   void SetPim(int i);
@@ -108,6 +121,7 @@ class Reaction {
   float pim_momentum_measured();
   float pim_theta_lab_measured();
   float pim_Phi_lab_measured();
+  float pim_theta_angle_btwn_P();
 
   // missingPip
   float pip_momentum();
@@ -116,6 +130,7 @@ class Reaction {
   float pip_momentum_measured();
   float pip_theta_lab_measured();
   float pip_Phi_lab_measured();
+  float pip_theta_angle_btwn_P();
 
   // missingProt
   float prot_momentum();
@@ -124,6 +139,7 @@ class Reaction {
   float prot_momentum_measured();
   float prot_theta_lab_measured();
   float prot_Phi_lab_measured();
+  float prot_theta_angle_btwn_P();
 
   void CalcMissMass();
   float MM();
@@ -136,6 +152,14 @@ class Reaction {
 
   float w_hadron();
   float w_difference();
+
+  void invMassPpip(const TLorentzVector &prot, const TLorentzVector &pip);
+  void invMassPpim(const TLorentzVector &prot, const TLorentzVector &pip);
+  void invMasspippim(const TLorentzVector &prot, const TLorentzVector &pip);
+
+  float inv_Ppip();
+  float inv_Ppim();
+  float inv_pip_pim();
 
   inline float W() { return _W; }
   inline float Q2() { return _Q2; }
@@ -190,17 +214,21 @@ class MCReaction : public Reaction {
 
   float _MM2_exclusive_mc = NAN;
   float _excl_Energy_mc = NAN;
+
  public:
   void SetMCProton(int i);
   void SetMCPip(int i);
   void SetMCPim(int i);
   void SetMCOther(int i);
 
-  MCReaction(const std::shared_ptr<Branches12> &data, float beam_energy);
+  MCReaction(const std::shared_ptr<Branches12> &data, float beam_energy, const std::string &data_type);
   void SetMCElec();
-  inline float weight() { return _data->mc_weight(); }
+  void CalcMissMass_mc();
+
+  inline float weight() { return _data->mc_weight() / 1e4; }
   inline float W_mc() { return _W_mc; }
   inline float Q2_mc() { return _Q2_mc; }
+  inline float MM2_exclusive_mc() const { return _MM2_exclusive_mc; }
 
   float elec_mom_mc_gen();
   float pim_mom_mc_gen();
@@ -208,6 +236,10 @@ class MCReaction : public Reaction {
   float prot_mom_mc_gen();
 
   float elec_E_mc_gen();
+
+  float MCinv_Ppip();
+  float MCinv_Ppim();
+  float MCinv_pip_pim();
 
   float elec_theta_mc_gen();
   float pim_theta_mc_gen();
@@ -219,7 +251,7 @@ class MCReaction : public Reaction {
   float pip_phi_mc_gen();
   float prot_phi_mc_gen();
 
-  void CalcMissMass_mc();
+  // void CalcMissMass_mc();
 
 };
 

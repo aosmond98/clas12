@@ -27,6 +27,7 @@
 #include <TDirectory.h>
 #include <sstream> // added this for w folders in mm2 w bins
 #include <iomanip> // Include the <iomanip> header for std::setprecision
+#include <TLine.h> // added for lines
 
 using namespace std;
 
@@ -46,23 +47,32 @@ protected:
     double p_max = 20.0;
     double Dt_max = 10.0;
     double Dt_min = -Dt_max;
+    double q2_min = 0.0;
     double q2_max = 24.0;
     // double q2_max = 30.0;
+    double w_min = 0.0;
     double w_max = 5.0;
     double zero = 0.0;
 
-    // number of W and Q^2 bins
-    static constexpr int w_nBins = 25; // 25 
-    static constexpr int q2_nBins = 17; // 17
+    double mm2_min = -5.0;
+    double mm2_max = 5.0;
 
-    // bin ranges for W and Q^2
-    double w_bin_ranges[w_nBins] = {1.4, 1.425, 1.45, 1.475, 1.5, 1.525, 1.55, 1.575, 1.6, 1.625, 1.65, 1.675, 
-                                1.7, 1.725, 1.75, 1.775, 1.8, 1.825, 1.85, 1.875, 1.9, 1.925, 1.95, 
-                                1.975, 2.0
-                                };
-    double q2_bin_ranges[q2_nBins] = {2.0, 2.4, 3.0, 3.5, 4.2, 5.0, 6.0, 7.0, 8.0, 9.0, 11.0, 13.0, 15.0, 18.0, 
-                                21.0, 25.0, 30.0
-                                };
+    double mm2_min_wide = -5.0;
+    double mm2_max_wide = 5.0;
+
+    double MM2_val;
+    std::string topology;
+
+    // ----- W and Q^2 binning -----
+
+    // number of W and Q^2 bins
+    static constexpr int w_nBins = 20; // 25 
+    static constexpr int q2_nBins = 16; // 17
+
+    double w_bin_lower[w_nBins] = {1.4, 1.45, 1.5, 1.55, 1.6, 1.65, 1.7, 1.75, 1.8, 1.85, 1.9, 1.95, 2.0, 2.05, 2.1, 2.15, 2.2, 2.25, 2.3, 2.35};
+    double w_bin_upper[w_nBins] = {1.45, 1.5, 1.55, 1.6, 1.65, 1.7, 1.75, 1.8, 1.85, 1.9, 1.95, 2.0, 2.05, 2.1, 2.15, 2.2, 2.25, 2.3, 2.35, 2.4};
+    double q2_bin_lower[q2_nBins] = {2.0, 2.4, 3.0, 3.5, 4.2, 5.0, 6.0, 7.0, 8.0, 9.0, 11.0, 13.0, 15.0, 18.0, 21.0, 25.0};
+    double q2_bin_upper[q2_nBins] = {2.4, 3.0, 3.5, 4.2, 5.0, 6.0, 7.0, 8.0, 9.0, 11.0, 13.0, 15.0, 18.0, 21.0, 25.0, 30.0};
 
     static const short particle_num = 4; // 0-e 1-Pi 2-P 3-K
     std::string particle_name[particle_num] = {"e", "pi", "P", "K"};
@@ -82,9 +92,28 @@ protected:
     std::mutex mutex;
 
     TH1D_ptr momentum;
-    TH2D_ptr Mom_vs_Q2_hist[particle_num][charge_num][with_id_num];
+    // TH2D_ptr Mom_vs_MM2_hist[particle_num][charge_num][with_id_num];
 
+    TH1D_ptr ec_ecin_energy_0;
+    TH2D_ptr pcal_vs_ecal;
+    TH2D_ptr pcal_ecal_x_vs_y;
+    TH1D_ptr ec_tot_energy;
     TH1D_ptr elec_energy;
+    TH1D_ptr elec_mom;
+
+    TH2D_ptr vx_vs_vy;
+    // TH2D_ptr corr_vx_vs_vy;
+    TH1D_ptr vz;
+    TH1D_ptr vz_sec[num_sectors];
+
+    TH1D_ptr cc_nphe_tot;
+
+    TH1D_ptr sf;
+    TH2D_ptr W_vs_sf;
+    TH2D_ptr W_vs_sf_sec[num_sectors];
+    TH2D_ptr mom_vs_sf;
+    TH2D_ptr momvssf_sec[num_sectors];
+
     TH2D_ptr mom_vs_theta;
     TH2D_ptr mom_vs_phi;
     TH2D_ptr momvstheta_sec[num_sectors];
@@ -96,27 +125,32 @@ protected:
 
     TH1D_ptr MM2;
     TH2D_ptr W_vs_MM2;
+    TH2D_ptr Q2_vs_MM2;
+    // TH2D_ptr Mom_vs_MM2;
+
+    // TH2D_ptr Q2bins_vs_MM2;
 
     TH1D_ptr W_mc;
     TH1D_ptr Q2_mc;
     TH2D_ptr WvsQ2_mc;
-    // TH1D_ptr MM2_mc;
+
+    TH1D_ptr MM2_mc;
     // TH2D_ptr W_vs_MM2_mc;
+    // TH2D_ptr Mom_vs_MM2_mc;
 
     TH1D_ptr W_sec[num_sectors];
     TH2D_ptr WvsQ2_sec[num_sectors];
     TH1D_ptr MM2_sec[num_sectors];
     TH2D_ptr W_vs_MM2_sec[num_sectors];
+    TH2D_ptr Q2_vs_MM2_sec[num_sectors];
 
     TH1D_ptr W_mc_sec[num_sectors];
     TH2D_ptr WvsQ2_mc_sec[num_sectors];
-    // TH1D_ptr MM2_mc_sec[num_sectors];
+    TH1D_ptr MM2_mc_sec[num_sectors];
     // TH2D_ptr W_vs_MM2_mc_sec[num_sectors];
 
     std::vector<std::vector<TH1D_ptr>> MM2_hists;
-
-    // TH1D_ptr W_det[3];
-    // TH2D_ptr WQ2_det[3];
+    std::vector<std::vector<TH1D_ptr>> MM2_hists_wide;
 
     // Mom vs Beta
     TH2D_ptr momvsbeta_hist[particle_num][charge_num][with_id_num];
@@ -133,14 +167,15 @@ public:
 
     // W vs Q2
     void makeHists_WvsQ2();
-    void Fill_WvsQ2(const std::shared_ptr<Reaction> &_e);
+    void Fill_WvsQ2(const std::shared_ptr<Reaction> &_e, const std::shared_ptr<Branches12> &data);
     void Fill_WvsQ2_mc(const std::shared_ptr<MCReaction> &_e);
     void Write_WvsQ2();
 
     // W vs MM2
     void makeHists_MM2();
-    void Fill_MM2(const std::shared_ptr<Reaction> &_e);
-    // void Fill_WvsMM2_mc(const std::shared_ptr<MCReaction> &_e);
+    void Fill_MM2(const std::shared_ptr<Reaction> &_e, const std::shared_ptr<Branches12> &data);
+    void Fill_MM2_mc(const std::shared_ptr<MCReaction> &_e, const std::shared_ptr<MCBranches12> &data);
+    void Fill_WvsMM2_mc(const std::shared_ptr<MCReaction> &_e);
     void Write_MM2();
 
     // MM2 with bins
@@ -153,10 +188,10 @@ public:
     void Fill_MomVsBeta(const std::shared_ptr<Branches12> &data, int part, const std::shared_ptr<Reaction> &_e);
     void Write_MomVsBeta();
 
-    // Mom vs Q2
-    void makeHists_MomVsQ2();
-    void Fill_MomVsQ2(const std::shared_ptr<Branches12> &data, int part, const std::shared_ptr<Reaction> &_e);
-    void Write_MomVsQ2();
+    // // Mom vs MM2
+    // void makeHists_MomVsMM2();
+    // void Fill_MomVsMM2(const std::shared_ptr<Branches12> &data, int part, const std::shared_ptr<Reaction> &_e);
+    // void Write_MomVsMM2();
 
     // Delta T
     void makeHists_deltat();

@@ -2,6 +2,9 @@
 #include <future>
 #include <thread>
 
+// Define the static member
+bool csv_data::isGenerated = true;  // Default to true (Generated data)
+
 int main(int argc, char** argv) {
         // Need this to make sure root doesn't break
         ROOT::EnableThreadSafety();
@@ -20,6 +23,8 @@ int main(int argc, char** argv) {
         if (argc >= 2) {
                 // First argument is the output file
                 outfilename = argv[1];
+                // Set the output type based on the output filename; 9/5/24
+                csv_data::setOutputType(outfilename);
                 // All other files are split evently by the under of threads
                 for (int i = 2; i < argc; i++) infilenames[i % NUM_THREADS].push_back(argv[i]);
         } else {
@@ -30,21 +35,21 @@ int main(int argc, char** argv) {
         auto csv_output_file = std::make_shared<SyncFile>(outfilename);
         csv_output_file->write(csv_data::header());
         // auto run_files = [&csv_output_file](auto&& inputs, auto&& thread_id) mutable {
-        auto run_files = [&csv_output_file](std::vector<std::string> inputs, auto&& thread_id) mutable {
+        auto run_files = [&csv_output_file, &outfilename](std::vector<std::string> inputs, auto&& thread_id) mutable {
+                 // Called once for each thread
+                 // Make a new chain to process for this thread
+                 auto chain = std::make_shared<TChain>("clas12");
 
-                                 // Called once for each thread
-                                 // Make a new chain to process for this thread
-                                 auto chain = std::make_shared<TChain>("clas12");
+                 // Add every file to the chain
+                 for (auto in : inputs) chain->Add(in.c_str());
+                                
+                 // Run the function over each thread
+                 // return run(chain, csv_output_file, thread_id);
 
-                                 // Add every file to the chain
-                                 for (auto in : inputs) chain->Add(in.c_str());
-
-                                 // Run the function over each thread
-                                 // return run(chain, csv_output_file, thread_id);
-                                 return run<uconn_Cuts>(std::move(chain), csv_output_file, thread_id);
+                 return run<Pass2_Cuts>(std::move(chain), csv_output_file, thread_id, outfilename); // commented out 9/4/24
 
 
-                         };
+         };
 
         // Make a set of threads (Futures are special threads which return a value)
         std::future<size_t> threads[NUM_THREADS];

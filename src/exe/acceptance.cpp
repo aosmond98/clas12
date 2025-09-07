@@ -67,17 +67,18 @@ int main(int argc, char** argv) {
     }
 // int main() {
     // Open the ROOT file
-    TFile *WvsQ2 = new TFile("10_2sim_excl_jlab_02_01_2024.root", "READ");
+    TFile *WvsQ2sim = new TFile("24gen_excl_hyperion_09_11_2024.root", "READ");
+    TFile *WvsQ2exp = new TFile("24rec_excl_hyperion_09_11_2024.root", "READ");
 
     // Clone histograms
-    TH2D *WvsQ2_gen = dynamic_cast<TH2D*>(WvsQ2->Get("W vs Q2/WvsQ2_gen")->Clone("WvsQ2_gen"));
-    TH2D *WvsQ2_rec = dynamic_cast<TH2D*>(WvsQ2->Get("W vs Q2/WvsQ2_rec")->Clone("WvsQ2_rec"));
+    TH2D *WvsQ2_sim = dynamic_cast<TH2D*>(WvsQ2sim->Get("W vs Q2/WvsQ2")->Clone("WvsQ2"));
+    TH2D *WvsQ2_exp = dynamic_cast<TH2D*>(WvsQ2exp->Get("W vs Q2/WvsQ2")->Clone("WvsQ2"));
 
     // TCanvas *WvsQ2_gen_can = dynamic_cast<TCanvas*>(WvsQ2->Get("W vs Q2/WvsQ2_gen_can")->Clone("WvsQ2_gen_can"));
     // TCanvas *WvsQ2_rec_can = dynamic_cast<TCanvas*>(WvsQ2->Get("W vs Q2/WvsQ2_rec_can")->Clone("WvsQ2_rec_can"));
 
     // Check if histograms are valid
-    if (!WvsQ2_gen || !WvsQ2_rec) {
+    if (!WvsQ2_sim || !WvsQ2_exp) {
         std::cerr << "Error: Unable to clone histograms." << std::endl;
         return 1;
     }
@@ -88,8 +89,8 @@ int main(int argc, char** argv) {
     // }
 
     // Create acceptance histograms
-    TH2D *acceptance_hist = dynamic_cast<TH2D*>(WvsQ2_rec->Clone("acceptance_hist"));
-    acceptance_hist->Divide(WvsQ2_gen);
+    TH2D *acceptance_hist = dynamic_cast<TH2D*>(WvsQ2_exp->Clone("acceptance_hist"));
+    acceptance_hist->Divide(WvsQ2_sim);
 
     // TH2D *acceptance_sec = dynamic_cast<TH2D*>(WvsQ2_rec_can->Clone("acceptance_sec"));
     // acceptance_sec->Divide(WvsQ2_gen_can);
@@ -120,7 +121,8 @@ int main(int argc, char** argv) {
     // histogram->Write_Acceptance_sec();
 
     // Close the ROOT file
-    WvsQ2->Close();
+    WvsQ2sim->Close();
+    WvsQ2exp->Close();
 
     return 0;
 }
