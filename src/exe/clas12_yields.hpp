@@ -48,7 +48,7 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<SyncFile>& _syn
   }
 
   // Print some information for each thread
-  std::cout << "=============== " << RED << "Thread " << thread_id << DEF << " =============== " << BLUE
+  std::cout << "=============== " << MAGENTA << "Thread " << thread_id << DEF << " =============== " << BLUE
             << num_of_events << " Events " << DEF << "===============\n";
 
   // Make a data object which all the branches can be accessed from
