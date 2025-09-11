@@ -88,5 +88,6 @@
         "variant": "cpp",
         "__verbose_abort": "cpp",
         "charconv": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }
