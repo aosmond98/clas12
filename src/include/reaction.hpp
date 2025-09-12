@@ -225,7 +225,7 @@ class MCReaction : public Reaction {
   void SetMCElec();
   void CalcMissMass_mc();
 
-  inline float weight() { return _data->mc_weight()} // / 1e4; }
+  inline float weight() { return _data->mc_weight(); } // / 1e4; }
   inline float W_mc() { return _W_mc; }
   inline float Q2_mc() { return _Q2_mc; }
   inline float MM2_exclusive_mc() const { return _MM2_exclusive_mc; }
