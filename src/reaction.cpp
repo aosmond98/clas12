@@ -286,7 +286,7 @@ float Reaction::pim_Phi_lab_measured() {
 }
 
 float Reaction::pim_theta_angle_btwn_P() {
-  if (TwoPion_exclusive() && TwoPion_missingPim()) {
+  if (TwoPion_exclusive()) { // && TwoPion_missingPim()) {
     auto missingpim_ = std::make_unique<TLorentzVector>();
     *missingpim_ += *_gamma + *_target - *_prot - *_pip;
 
@@ -361,7 +361,7 @@ float Reaction::pip_Phi_lab_measured() {
 }
 
 float Reaction::pip_theta_angle_btwn_P() {
-  if (TwoPion_exclusive() && TwoPion_missingPip()) {
+  if (TwoPion_exclusive()) { // && TwoPion_missingPip()) {
     auto missingpip_ = std::make_unique<TLorentzVector>();
     *missingpip_ += *_gamma + *_target - *_prot - *_pim;
 
@@ -438,7 +438,7 @@ float Reaction::prot_Phi_lab_measured() {
 }
 
 float Reaction::prot_theta_angle_btwn_P() {
-  if (TwoPion_exclusive() && TwoPion_missingProt()) {
+  if (TwoPion_exclusive()) { // removed this part to test theta cuts && TwoPion_missingProt()) {
     auto missingprot_ = std::make_unique<TLorentzVector>();
     *missingprot_ += *_gamma + *_target - *_pip - *_pim;
 
