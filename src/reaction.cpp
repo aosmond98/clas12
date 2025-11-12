@@ -438,7 +438,7 @@ float Reaction::prot_Phi_lab_measured() {
 }
 
 float Reaction::prot_theta_angle_btwn_P() {
-  if (TwoPion_exclusive()) { // removed this part to test theta cuts && TwoPion_missingProt()) {
+  if (TwoPion_exclusive()) { // removed this part to test theta cuts -->    && TwoPion_missingProt()) {
     auto missingprot_ = std::make_unique<TLorentzVector>();
     *missingprot_ += *_gamma + *_target - *_pip - *_pim;
 
