@@ -11,6 +11,8 @@
 #include "cuts.hpp"
 #include "reaction.hpp"
 #include "syncfile.hpp"
+#include <unordered_set>
+#include "TLorentzVector.h"
 
 // Helper function to check if a string contains a substring (case-sensitive)
 bool contains(const std::string& str, const std::string& substr) {
@@ -174,6 +176,8 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<SyncFile>& _syn
             
         //     total_twopion_events++;
 
+          
+
             // ----- Reconstructed data output -----
             csv_data output;
             output.event = current_event;
@@ -201,7 +205,7 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<SyncFile>& _syn
             output.prot_theta_miss = event->prot_theta_lab();
             output.prot_theta_meas = event->prot_theta_lab_measured();
 
-            output.prot_theta_angle_btwn_P = event->prot_theta_angle_btwn_P();
+            output.prot_theta_angle_btwn_P = event->R();
             output.pip_theta_angle_btwn_P = event->pip_theta_angle_btwn_P();
             output.pim_theta_angle_btwn_P = event->pim_theta_angle_btwn_P();
 
