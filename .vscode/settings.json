@@ -87,7 +87,8 @@
         "unordered_set": "cpp",
         "variant": "cpp",
         "__verbose_abort": "cpp",
-        "charconv": "cpp"
+        "charconv": "cpp",
+        "delta_t_ftof_P_positive_withoutID.C": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
