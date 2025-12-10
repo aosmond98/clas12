@@ -205,7 +205,7 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<SyncFile>& _syn
             output.prot_theta_miss = event->prot_theta_lab();
             output.prot_theta_meas = event->prot_theta_lab_measured();
 
-            output.prot_theta_angle_btwn_P = event->R();
+            output.prot_theta_angle_btwn_P = event->prot_theta_angle_btwn_P();
             output.pip_theta_angle_btwn_P = event->pip_theta_angle_btwn_P();
             output.pim_theta_angle_btwn_P = event->pim_theta_angle_btwn_P();
 
