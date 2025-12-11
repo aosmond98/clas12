@@ -183,7 +183,7 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<SyncFile>& _syn
             output.event = current_event;
             output.w = event->W();
             output.q2 = event->Q2();
-            output.weight_rec = event->weight();
+            output.weight_rec = event->weight() / 1e4;
 
             output.mm2_mPim = event->MM2_mPim();
             output.mm2_mPip = event->MM2_mPip();
